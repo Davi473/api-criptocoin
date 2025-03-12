@@ -11,7 +11,7 @@ export default class SaveWallet implements UseCase {
 
     public async execute(input: Input): Promise<Output> {
         const wallet = Wallet.create(input.name, input.wallet, input.rede,
-            input.crypto, input.currency, input.contract);
+            input.crypto, input.currency, input.reference, input.contract);
         await this.repository.save(wallet);
         return {
             id: wallet.id
@@ -25,6 +25,7 @@ type Input = {
     rede: string,
     contract: string,
     currency: string
+    reference: number
     crypto: string
 }
 

@@ -9,6 +9,7 @@ export default class Wallet {
     private contract: string;
     private crypto: string;
     private currency: Currency;
+    private reference: number
 
     constructor (
         readonly id: string,
@@ -17,7 +18,8 @@ export default class Wallet {
         rede: string, 
         contract: string, 
         crypto: string,
-        currency: string
+        currency: string,
+        reference: number
     ) {
         this.name = name;
         this.wallet = wallet;
@@ -25,14 +27,15 @@ export default class Wallet {
         this.contract = contract;
         this.crypto = crypto;
         this.currency = new Currency(currency);
+        this.reference = reference;
     }
 
     public static create(
         name: string, wallet: string, rede: string,
-        crypto: string, currency: string, contract: string = ""
+        crypto: string, currency: string, reference: number, contract: string = ""
     ): Wallet {
         const id = crypt.randomUUID();
-        return new Wallet(id, name, wallet, rede, contract, crypto, currency);
+        return new Wallet(id, name, wallet, rede, contract, crypto, currency, reference);
     }
 
     public getName (): string {
@@ -55,7 +58,11 @@ export default class Wallet {
         return this.crypto;
     }
 
-    public getCurrency(): string {
+    public getCurrency (): string {
         return this.currency.getValue();
+    }
+
+    public getReference (): number {
+        return this.reference;
     }
 }

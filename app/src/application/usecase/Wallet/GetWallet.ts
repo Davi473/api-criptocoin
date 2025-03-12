@@ -32,7 +32,8 @@ export default class GetWallet implements UseCase {
                 amount = await this.bitcoinService.getBitcoinBalance(wallet.getWallet());
             if (wallet.getRede() === "Base")
                 amount = await this.baseService.getBaseBalance(wallet.getWallet(), wallet.getContract());
-            let quote = await this.currencyPriceService
+            amount = amount / wallet.getReference();
+            let currencyValueOfTheQuote = await this.currencyPriceService
                 .getCryptoPrice(wallet.getCrypto().toLowerCase(), wallet.getCurrency().toLowerCase());
             output.push({
                 id: wallet.id,
@@ -40,7 +41,8 @@ export default class GetWallet implements UseCase {
                 amount,
                 wallet: wallet.getWallet(),
                 rede: wallet.getRede(),
-                quote,
+                currencyValueOfTheQuote,
+                totalValeu: amount * currencyValueOfTheQuote,
                 contract: wallet.getContract(),
                 currency: wallet.getCurrency(),
                 crypto: wallet.getCrypto()
@@ -58,7 +60,8 @@ type Output = {
     rede: string,
     contract: string,
     currency: string,
-    quote: number,
+    totalValeu: number,
+    currencyValueOfTheQuote: number,
     crypto: string
 }
 

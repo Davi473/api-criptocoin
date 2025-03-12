@@ -12,8 +12,7 @@ export default class BaseService {
                 tag: "latest",
               },
             });
-        
-            const balance = Number(response.data.result) / 1e6; 
+            const balance = Number(response.data.result); 
             return balance
         } catch (e: any) {
             throw new Error(`Erro ao buscar na rede Base: ${e.any}`);
