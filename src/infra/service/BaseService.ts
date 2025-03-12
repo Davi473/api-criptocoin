@@ -14,10 +14,9 @@ export default class BaseService {
             });
         
             const balance = Number(response.data.result) / 1e6; 
-            console.log(`USDC Balance on Base: ${balance} USDC`);
             return balance
         } catch (e: any) {
-            throw new Error(`Erro ao buscar saldo de USDC na rede Base: ${e.any}`);
+            throw new Error(`Erro ao buscar na rede Base: ${e.any}`);
         }
     }
 }

@@ -1,4 +1,4 @@
-import BitcoinService from "../src/infra/service/BitcoinService";
+import BitcoinService from "../../src/infra/service/BitcoinService";
 
 test("Bitcoin", async () => {
     const coin = new BitcoinService();
