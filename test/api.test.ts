@@ -4,9 +4,10 @@ test("Create Wallet Bitcoin", async () => {
     const wallet = {
         name: "Bitcoin",
         wallet: "bc1qx8y6p5s6wrmcufwm3ccm2huhhudk9u3av992hx",
-        coin: "BTC",
+        rede: "BTC",
         contract: "",
-        nameCoin: "Bitcoin"
+        currency: "USD",
+        crypto: "Bitcoin"
     }
     const outputCreateData = await axios.post("http://localhost:3000/wallet", wallet);
     const outputCreate = outputCreateData.data;
@@ -14,15 +15,21 @@ test("Create Wallet Bitcoin", async () => {
     const outputByIdData = await axios.get(`http://localhost:3000/wallet/${outputCreate.id}`);
     const outputById = outputByIdData.data;
     expect(outputById.name).toBe(wallet.name);
+    expect(outputById.rede).toBe(wallet.rede);
+    expect(outputById.wallet).toBe(wallet.wallet);
+    expect(outputById.contract).toBe(wallet.contract);
+    expect(outputById.currency).toBe(wallet.currency);
+    expect(outputById.crypto).toBe(wallet.crypto);
 });
 
 test("Create Wallet Base", async () => {
     const wallet = {
         name: "Bitcoin Base",
         wallet: "0x31B3beBFd2e7e4a0328f1E7137CaF41b86D81950",
-        coin: "Base",
+        rede: "Base",
         contract: "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
-        nameCoin: "Bitcoin"
+        currency: "EUR",
+        crypto: "Bitcoin"
     }
     const outputCreateData = await axios.post("http://localhost:3000/wallet", wallet);
     const outputCreate = outputCreateData.data;
@@ -30,4 +37,9 @@ test("Create Wallet Base", async () => {
     const outputByIdData = await axios.get(`http://localhost:3000/wallet/${outputCreate.id}`);
     const outputById = outputByIdData.data;
     expect(outputById.name).toBe(wallet.name);
+    expect(outputById.rede).toBe(wallet.rede);
+    expect(outputById.wallet).toBe(wallet.wallet);
+    expect(outputById.contract).toBe(wallet.contract);
+    expect(outputById.currency).toBe(wallet.currency);
+    expect(outputById.crypto).toBe(wallet.crypto);
 });

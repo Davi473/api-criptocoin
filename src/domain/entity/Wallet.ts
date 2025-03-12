@@ -1,29 +1,38 @@
-import crypto from "crypto";
+import * as crypt from "crypto";
+import Rede from "../vo/Rede";
+import Currency from "../vo/Currency";
 
 export default class Wallet {
     private name: string;
     private wallet: string;
-    private coin: string;
+    private rede: Rede;
     private contract: string;
-    private nameCoin: string;
+    private crypto: string;
+    private currency: Currency;
 
     constructor (
-        readonly id: string, name: string, wallet: string, 
-        coin: string, contract: string, nameCoin: string
+        readonly id: string,
+        name: string, 
+        wallet: string, 
+        rede: string, 
+        contract: string, 
+        crypto: string,
+        currency: string
     ) {
         this.name = name;
         this.wallet = wallet;
-        this.coin = coin;
+        this.rede = new Rede(rede);
         this.contract = contract;
-        this.nameCoin = nameCoin;
+        this.crypto = crypto;
+        this.currency = new Currency(currency);
     }
 
     public static create(
-        name: string, wallet: string, coin: string,
-        nameCoin: string, contract: string = ""
+        name: string, wallet: string, rede: string,
+        crypto: string, currency: string, contract: string = ""
     ): Wallet {
-        const id = crypto.randomUUID();
-        return new Wallet(id, name, wallet, coin, contract, nameCoin);
+        const id = crypt.randomUUID();
+        return new Wallet(id, name, wallet, rede, contract, crypto, currency);
     }
 
     public getName (): string {
@@ -34,15 +43,19 @@ export default class Wallet {
         return this.wallet;
     }   
 
-    public getCoin (): string {
-        return this.coin;
+    public getRede (): string {
+        return this.rede.getValue();
     }
 
     public getContract (): string {
         return this.contract;
     }
 
-    public getNameCoin (): string {
-        return this.nameCoin;
+    public getCrypto (): string {
+        return this.crypto;
+    }
+
+    public getCurrency(): string {
+        return this.currency.getValue();
     }
 }

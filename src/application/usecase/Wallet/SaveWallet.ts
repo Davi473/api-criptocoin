@@ -10,8 +10,8 @@ export default class SaveWallet implements UseCase {
     }
 
     public async execute(input: Input): Promise<Output> {
-        const wallet = Wallet.create(input.name, input.wallet, input.coin,
-            input.nameCoin, input.contract);
+        const wallet = Wallet.create(input.name, input.wallet, input.rede,
+            input.crypto, input.currency, input.contract);
         await this.repository.save(wallet);
         return {
             id: wallet.id
@@ -22,9 +22,10 @@ export default class SaveWallet implements UseCase {
 type Input = {
     name: string,
     wallet: string,
-    coin: string,
+    rede: string,
     contract: string,
-    nameCoin: string
+    currency: string
+    crypto: string
 }
 
 type Output = {

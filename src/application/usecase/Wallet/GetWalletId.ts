@@ -22,9 +22,9 @@ export default class GetWalletId implements UseCase {
     public async execute(input: Input): Promise<Output> {
         const wallet = await this.repository.findById(input.id);
         let amount: number;
-        if (wallet.getCoin() === "BTC") 
+        if (wallet.getRede() === "BTC") 
             amount = await this.bitcoinService.getBitcoinBalance(wallet.getWallet());
-        else if (wallet.getCoin() === "Base")
+        else if (wallet.getRede() === "Base")
             amount = await this.baseService.getBaseBalance(wallet.getWallet(), wallet.getContract());
         else 
             amount = 0;
@@ -33,9 +33,10 @@ export default class GetWalletId implements UseCase {
             name: wallet.getName(),
             amount: amount,
             wallet: wallet.getWallet(),
-            coin: wallet.getCoin(),
+            rede: wallet.getRede(),
             contract: wallet.getContract(),
-            nameCoin: wallet.getNameCoin()
+            currency: wallet.getCurrency(),
+            crypto: wallet.getCrypto(),
         };
         return output;
     }
@@ -50,9 +51,10 @@ type Output = {
     name: string,
     wallet: string,
     amount: string | number,
-    coin: string,
+    rede: string,
     contract: string,
-    nameCoin: string
+    currency: string
+    crypto: string
 }
 
 
