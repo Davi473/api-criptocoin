@@ -1,24 +1,20 @@
-import BaseService from "../../../infra/service/BaseService";
-import BitcoinService from "../../../infra/service/BitcoinService";
+import CoinServiceProvider from "../../../infra/service/coinServiceProvider";
 import CurrencyPriceService from "../../../infra/service/CurrencyPriceService";
 import WalletRepository from "../../repository/WalletRepository";
 import UseCase from "../UseCase";
 
 export default class GetWallet implements UseCase {
     private repository: WalletRepository;
-    private baseService: BaseService;
-    private bitcoinService: BitcoinService;
+    private coinServiceProvider: CoinServiceProvider;
     private currencyPriceService: CurrencyPriceService;
 
     constructor (
         repository: WalletRepository,
-        baseService: BaseService,
-        bitcoinService: BitcoinService,
+        coinServiceProvider: CoinServiceProvider,
         currencyPriceService: CurrencyPriceService
     ) {
         this.repository = repository;
-        this.baseService = baseService;
-        this.bitcoinService = bitcoinService
+        this.coinServiceProvider = coinServiceProvider
         this.currencyPriceService = currencyPriceService;
     }
 
@@ -27,18 +23,16 @@ export default class GetWallet implements UseCase {
         
         const output: Output[] = [];
         for (const wallet of wallets) {
-            let amount: number =0;
-            if (wallet.getRede() === "BTC") 
-                amount = await this.bitcoinService.getBitcoinBalance(wallet.getWallet());
-            if (wallet.getRede() === "Base")
-                amount = await this.baseService.getBaseBalance(wallet.getWallet(), wallet.getContract());
-            amount = amount / wallet.getReference();
+            
+            const amountWallet = await this.coinServiceProvider.provide({moeda: wallet.getCrypto(), rede: wallet.getRede()});
+            
+            const amount = amountWallet.getBalance(wallet.get) / wallet.getReference();
             let currencyValueOfTheQuote = await this.currencyPriceService
                 .getCryptoPrice(wallet.getCrypto().toLowerCase(), wallet.getCurrency().toLowerCase());
             output.push({
                 id: wallet.id,
                 name: wallet.getName(),
-                amount,
+                amount: amount ,
                 wallet: wallet.getWallet(),
                 rede: wallet.getRede(),
                 currencyValueOfTheQuote,
