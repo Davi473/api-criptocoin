@@ -1,19 +1,19 @@
-import ICoinService, { BaseService, BitcoinService } from "./coinService";
+import ICoinService, { BaseService, BitcoinService, EthereumService } from "./coinService";
 
-// Interface para a requisição do serviço
 interface ICoinServiceRequest {
     moeda?: string | undefined;
     rede: string;
 }
 
-// Provider para selecionar o serviço correto
 export default class CoinServiceProvider {
     public provide(request: ICoinServiceRequest): ICoinService {
         switch (request.rede.toLowerCase()) {
             case "base":
                 return new BaseService(request.moeda);
-            case "bitcoin":
+            case "btc":
                 return new BitcoinService();
+            case "eth":
+                return new EthereumService();
             default:
                 throw new Error("Rede não suportada");
         }

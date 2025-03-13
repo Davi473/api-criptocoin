@@ -1,42 +1,41 @@
-import BaseService from "../../../infra/service/BaseService";
-import BitcoinService from "../../../infra/service/BitcoinService";
+import CoinServiceProvider from "../../../infra/service/coinServiceProvider";
+import CurrencyPriceService from "../../../infra/service/CurrencyPriceService";
 import WalletRepository from "../../repository/WalletRepository";
 import UseCase from "../UseCase";
 
 export default class GetWalletId implements UseCase {
     private repository: WalletRepository;
-    private baseService: BaseService;
-    private bitcoinService: BitcoinService;
+    private coinServiceProvider: CoinServiceProvider;
+    private currencyPriceService: CurrencyPriceService
 
     constructor (
         repository: WalletRepository,
-        baseService: BaseService,
-        bitcoinService: BitcoinService
+        coinServiceProvider: CoinServiceProvider,
+        currencyPriceService: CurrencyPriceService
     ) {
         this.repository = repository;
-        this.baseService = baseService;
-        this.bitcoinService = bitcoinService
-
+        this.coinServiceProvider = coinServiceProvider;
+        this.currencyPriceService = currencyPriceService;
     }
 
     public async execute(input: Input): Promise<Output> {
         const wallet = await this.repository.findById(input.id);
-        let amount: number;
-        if (wallet.getRede() === "BTC") 
-            amount = await this.bitcoinService.getBitcoinBalance(wallet.getWallet());
-        else if (wallet.getRede() === "Base")
-            amount = await this.baseService.getBaseBalance(wallet.getWallet(), wallet.getContract());
-        else 
-            amount = 0;
+        const amountWallet = this.coinServiceProvider.provide(
+            {moeda: wallet.getCrypto(), rede: wallet.getRede()});
+        const amount = await amountWallet.getBalance(wallet.getWallet()) / wallet.getReference();
+        let currencyValueOfTheQuote = await this.currencyPriceService
+            .getCryptoPrice(wallet.getCrypto(), wallet.getCurrency());
         const output = {
             id: wallet.id,
             name: wallet.getName(),
-            amount: amount,
+            amount: amount ,
             wallet: wallet.getWallet(),
             rede: wallet.getRede(),
+            currencyValueOfTheQuote,
+            totalValeu: (amount * currencyValueOfTheQuote).toFixed(2),
             contract: wallet.getContract(),
             currency: wallet.getCurrency(),
-            crypto: wallet.getCrypto(),
+            crypto: wallet.getCrypto()
         };
         return output;
     }

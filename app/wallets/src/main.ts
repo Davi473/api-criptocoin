@@ -18,7 +18,7 @@ const currencyPrice = new CurrencyPriceService();
 
 const getWallet = new GetWallet(repository, coinServiceProvider, currencyPrice);
 const saveWallet = new SaveWallet(repository);
-const getWalletId = new GetWalletId(repository, coinServiceProvider);
+const getWalletId = new GetWalletId(repository, coinServiceProvider, currencyPrice);
 
 new WalletController(API, getWallet, saveWallet, getWalletId);
 

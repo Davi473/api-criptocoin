@@ -3,6 +3,7 @@ export default class Currency {
 
     constructor (currency: string) {
         const currencys = ["usd", "eur", "brl"];
+        if (!currency) throw new Error("Cannot empty value");
         if (!currencys.includes(currency.toLowerCase())) throw new Error(`We do not use ${currency} currency`);
         this.value = currency;
     }

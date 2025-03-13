@@ -20,15 +20,13 @@ export default class GetWallet implements UseCase {
 
     public async execute(): Promise<Output[]> {
         const wallets = await this.repository.findAll();
-        
         const output: Output[] = [];
         for (const wallet of wallets) {
-            
-            const amountWallet = await this.coinServiceProvider.provide({moeda: wallet.getCrypto(), rede: wallet.getRede()});
-            
-            const amount = amountWallet.getBalance(wallet.get) / wallet.getReference();
+            const amountWallet = this.coinServiceProvider.provide(
+                {moeda: wallet.getCrypto(), rede: wallet.getRede()});
+            const amount = await amountWallet.getBalance(wallet.getWallet()) / wallet.getReference();
             let currencyValueOfTheQuote = await this.currencyPriceService
-                .getCryptoPrice(wallet.getCrypto().toLowerCase(), wallet.getCurrency().toLowerCase());
+                .getCryptoPrice(wallet.getCrypto(), wallet.getCurrency());
             output.push({
                 id: wallet.id,
                 name: wallet.getName(),
@@ -36,7 +34,7 @@ export default class GetWallet implements UseCase {
                 wallet: wallet.getWallet(),
                 rede: wallet.getRede(),
                 currencyValueOfTheQuote,
-                totalValeu: amount * currencyValueOfTheQuote,
+                totalValeu: (amount * currencyValueOfTheQuote).toFixed(2),
                 contract: wallet.getContract(),
                 currency: wallet.getCurrency(),
                 crypto: wallet.getCrypto()
@@ -54,7 +52,7 @@ type Output = {
     rede: string,
     contract: string,
     currency: string,
-    totalValeu: number,
+    totalValeu: number | string,
     currencyValueOfTheQuote: number,
     crypto: string
 }
