@@ -13,11 +13,15 @@ export default class Currency {
     }
 
     public getSymbol(): string {
-        const symbol: Record<string, string> = {
-            "usd": "$",
-            "eur": "€",
-            "brl": "R$"
+        enum Symbol {
+            "usd"= "$",
+            "eur"= "€",
+            "brl"= "R$"
         };
-        return symbol[`${this.value}`];
+        const key = this.value.toLowerCase() as keyof typeof Symbol;
+        if (!(key in Symbol)) {
+            throw new Error(`Criptomoeda inválida: ${crypto}`);
+        }
+        return Symbol[key];
     }
 }
