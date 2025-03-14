@@ -1,6 +1,6 @@
 enum Calculator {
     bitcoin = 1e8,  
-    ethereum = 1e16, 
+    ethereum = 1e18, 
     usd = 1e6        
 }
 

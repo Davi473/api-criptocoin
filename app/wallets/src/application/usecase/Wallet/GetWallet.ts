@@ -30,7 +30,7 @@ export default class GetWallet implements UseCase {
             const calculetorCrypto =new CalculatorCrypto(wallet.getCrypto(), amount);
             const currencyValueOfTheQuote = await this.currencyPriceService
                 .getCryptoPrice(wallet.getCrypto(), wallet.getCurrency());
-            const exchangeValue = new FiduciarioCalculator(currencyValueOfTheQuote, amount);
+            const exchangeValue = new FiduciarioCalculator(currencyValueOfTheQuote, calculetorCrypto.getValue());
             output.push({
                 id: wallet.id,
                 name: wallet.getName(),
