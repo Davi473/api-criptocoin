@@ -62,6 +62,10 @@ export default class Wallet {
         return this.currency.getValue();
     }
 
+    public getSymbol (): string {
+        return this.currency.getSymbol();
+    }
+
     public getReference (): number {
         return this.reference;
     }

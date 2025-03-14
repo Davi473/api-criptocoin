@@ -11,4 +11,13 @@ export default class Currency {
     public getValue(): string {
         return this.value;
     }
+
+    public getSymbol(): string {
+        const symbol: Record<string, string> = {
+            "usd": "$",
+            "eur": "€",
+            "brl": "R$"
+        };
+        return symbol[`${this.value}`];
+    }
 }

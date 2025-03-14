@@ -11,6 +11,7 @@ export default class CurrencyPriceService {
             const data = await response.data;
             return data[crypto][currency];
         } catch (error) {
+            console.log(url)
             throw new Error(`I can't find the ${crypto} to ${currency} quote`)
         }
     }

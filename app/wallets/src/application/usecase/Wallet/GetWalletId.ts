@@ -1,3 +1,5 @@
+import CalculatorCrypto from "../../../domain/entity/CalculatorCrypto";
+import FiduciarioCalculator from "../../../domain/entity/FiduciarioCalculator";
 import CoinServiceProvider from "../../../infra/service/coinServiceProvider";
 import CurrencyPriceService from "../../../infra/service/CurrencyPriceService";
 import WalletRepository from "../../repository/WalletRepository";
@@ -20,19 +22,21 @@ export default class GetWalletId implements UseCase {
 
     public async execute(input: Input): Promise<Output> {
         const wallet = await this.repository.findById(input.id);
-        const amountWallet = this.coinServiceProvider.provide(
+        const coinService = this.coinServiceProvider.provide(
             {moeda: wallet.getCrypto(), rede: wallet.getRede()});
-        const amount = await amountWallet.getBalance(wallet.getWallet()) / wallet.getReference();
-        let currencyValueOfTheQuote = await this.currencyPriceService
+        const amount = await coinService.getBalance(wallet.getWallet());
+        const calculetorCrypto =new CalculatorCrypto(wallet.getCrypto(), amount);
+        const currencyValueOfTheQuote = await this.currencyPriceService
             .getCryptoPrice(wallet.getCrypto(), wallet.getCurrency());
+        const exchangeValue = new FiduciarioCalculator(currencyValueOfTheQuote, amount);
         const output = {
             id: wallet.id,
             name: wallet.getName(),
-            amount: amount ,
+            amount: calculetorCrypto.getValue(),
             wallet: wallet.getWallet(),
             rede: wallet.getRede(),
             currencyValueOfTheQuote,
-            totalValeu: (amount * currencyValueOfTheQuote).toFixed(2),
+            exchangeValue: exchangeValue.getValueFormatted(wallet.getSymbol()),
             contract: wallet.getContract(),
             currency: wallet.getCurrency(),
             crypto: wallet.getCrypto()
@@ -48,9 +52,11 @@ type Input = {
 type Output = {
     id: string,
     name: string,
-    wallet: string,
     amount: string | number,
+    wallet: string,
     rede: string,
+    currencyValueOfTheQuote: any,
+    exchangeValue: any,
     contract: string,
     currency: string
     crypto: string
